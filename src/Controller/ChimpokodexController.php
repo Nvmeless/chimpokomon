@@ -27,7 +27,7 @@ class ChimpokodexController extends AbstractController
     public function getAllChimpokodex(ChimpokodexRepository $repository, SerializerInterface $serializer): JsonResponse
     {
         $chimpokodexs = $repository->findAll();
-        $jsonChimpokodex = $serializer->serialize($chimpokodexs, 'json');
+        $jsonChimpokodex = $serializer->serialize($chimpokodexs, 'json', ['groups' => "getAllWithinEvolutions"] );
         return new JsonResponse($jsonChimpokodex,200, [], true);
     }
      
@@ -44,7 +44,7 @@ class ChimpokodexController extends AbstractController
     #[ParamConverter("chimpokodex", options: ["id" => "idChimpokodex"])]
     public function getChimpokodex(Chimpokodex $chimpokodex, SerializerInterface $serializer): JsonResponse
     {
-        $jsonChimpokodex = $serializer->serialize($chimpokodex, 'json');
+        $jsonChimpokodex = $serializer->serialize($chimpokodex, 'json', ['groups' => "getAllWithinEvolutions"]);
         return new JsonResponse($jsonChimpokodex,200, [], true);
     }
 
@@ -58,10 +58,15 @@ class ChimpokodexController extends AbstractController
  * @param UrlGeneratorInterface $urlGenerator
  * @return JsonResponse
  */
-    public function createChimpokodex(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator): JsonResponse
+    public function createChimpokodex(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, ChimpokodexRepository $repository): JsonResponse
     {
         $chimpokodex = $serializer->deserialize($request->getContent(),Chimpokodex::class,"json");
         $dateNow = new \DateTime();
+        $evolutionID = $request->toArray()["evolutionId"];
+        $evolution = $repository->find($evolutionID);
+        if(!is_null($evolution) && $evolution instanceof Chimpokodex){
+            $chimpokodex->addEvolution($evolution);
+        }
         $chimpokodex
         ->setStatus('on')
         ->setCreatedAt($dateNow)
@@ -72,7 +77,7 @@ class ChimpokodexController extends AbstractController
         $entityManager->flush();
 
 
-        $jsonChimpokodex = $serializer->serialize($chimpokodex, 'json');
+        $jsonChimpokodex = $serializer->serialize($chimpokodex, 'json', ['groups' => "getAllWithinEvolutions"]);
 
         $location = $urlGenerator->generate('chimpokodex.get', ["idChimpokodex" => $chimpokodex->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
 

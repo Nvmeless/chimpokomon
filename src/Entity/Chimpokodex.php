@@ -7,19 +7,24 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-
+//Serializer Groups
+use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: ChimpokodexRepository::class)]
 class Chimpokodex
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["getAllWithinEvolutions", "getAll"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["getAllWithinEvolutions", "getAll"])]
+
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Groups(["getAllWithinEvolutions", "getAll"])]
     private ?int $pvMax = null;
 
     #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'devolution')]
@@ -29,12 +34,17 @@ class Chimpokodex
     private Collection $devolution;
 
     #[ORM\Column(length: 24)]
+    #[Groups(["getAllWithinEvolutions", "getAll"])]
     private ?string $status = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(["getAllWithinEvolutions", "getAll"])]
+
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(["getAllWithinEvolutions", "getAll"])]
+
     private ?\DateTimeInterface $updatedAt = null;
 
     public function __construct()
