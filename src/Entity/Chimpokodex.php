@@ -10,6 +10,32 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 //Serializer Groups
 use Symfony\Component\Serializer\Annotation\Groups;
+use Hateoas\Configuration\Annotation as Hateoas;
+/**
+ * @Hateoas\Relation(
+ *      "self",
+ *      href = @Hateoas\Route(
+ *          "chimpokodex.get",
+ *          parameters = { "idChimpokodex" = "expr(object.getId())" }
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups="getAllChimpokodex"),
+ * )
+ * @Hateoas\Relation(
+ *     "up",
+ *      href = @Hateoas\Route(
+ *          "chimpokodex.getAll"
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups="getAllChimpokodex")
+ * )
+ * @Hateoas\Relation(
+ *     "update",
+ *      href = @Hateoas\Route(
+ *          "chimpokodex.update",
+ *          parameters = { "idChimpokodex" = "expr(object.getId())" }
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups="getAllChimpokodex")
+ * )
+ */
 #[ORM\Entity(repositoryClass: ChimpokodexRepository::class)]
 class Chimpokodex
 {
