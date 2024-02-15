@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 //Serializer Groups
 use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: ChimpokodexRepository::class)]
@@ -20,7 +21,9 @@ class Chimpokodex
 
     #[ORM\Column(length: 255)]
     #[Groups(["getAllWithinEvolutions", "getAll"])]
-
+    #[Assert\NotBlank(message:"Un Chimpokodex doit avoir un nom")]
+    #[Assert\NotNull(message: "Un Chimpokodex doit avoir un nom")]
+    #[Assert\Length(min: 5, minMessage: "Le nom d'un Chimpokodex doit forcement faire plus de {{limit}} characteres" )]
     private ?string $name = null;
 
     #[ORM\Column]
